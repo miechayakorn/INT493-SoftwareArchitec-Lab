@@ -1,7 +1,7 @@
 # Copies the file as the root user using SSH
 provisioner "file" {
-  source      = "LAB1-count-messages/"
-  destination = "/etc/myapp.conf"
+  source      = "LAB1-count-messages/app.js"
+  destination = "/home/azureuser/app.js"
 
   connection {
     type     = "ssh"
