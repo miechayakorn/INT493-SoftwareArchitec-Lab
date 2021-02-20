@@ -18,7 +18,7 @@ yarn-error.log*
 lerna-debug.log*
 
 ### Java ###
-LAB2/chat-app/.idea
+*.idea
 *.class
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
