@@ -39,7 +39,11 @@ public class Client {
                 if (key.isReadable()) {
                     SocketChannel ch = (SocketChannel) key.channel();
                     ByteBuffer buf = ByteBuffer.allocate(20);
-                    ch.read(buf);
+                    int n = ch.read(buf);
+                    if (n == -1) {
+                        ch.close();
+                        continue;
+                    }
                     buf.flip();
                     System.out.println(new String(buf.array()));
                 }
