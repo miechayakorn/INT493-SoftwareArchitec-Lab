@@ -16,13 +16,13 @@ public class Client {
     public static void main(String[] args) throws Exception {
         Selector selector = Selector.open();
 
-        SocketChannel clientCh = SocketChannel.open();
-        clientCh.configureBlocking(false);
-        clientCh.register(selector, SelectionKey.OP_CONNECT);
+        // Create Channel
+        SocketChannel clientChannel = SocketChannel.open();
+        clientChannel.configureBlocking(false);
+        clientChannel.register(selector, SelectionKey.OP_CONNECT);
 
-        // set IP address and port to connect server
-        clientCh.connect(new InetSocketAddress("127.0.0.1", 9000));
-
+        // Set IP address and port to connect server
+        clientChannel.connect(new InetSocketAddress("127.0.0.1", 9000));
 
         while (true) {
             selector.select();
@@ -30,10 +30,10 @@ public class Client {
             Iterator<SelectionKey> it = keys.iterator();
             while (it.hasNext()) {
                 SelectionKey key = it.next();
-                //check or do something it event
                 if (key.isConnectable()) {
                     SocketChannel ch = (SocketChannel) key.channel();
 
+                    // For new Client and create new thread
                     if (ch.isConnectionPending()) {
                         ch.finishConnect();
                         ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -41,13 +41,11 @@ public class Client {
                         buffer.flip();
                         ch.write(buffer);
 
-                        // Create a new thread to monitor input
                         ExecutorService executorService = Executors.newSingleThreadExecutor(Executors.defaultThreadFactory());
                         executorService.submit(() -> {
                             while (true) {
                                 buffer.clear();
                                 Scanner scanner = new Scanner(System.in);
-                                System.out.print("");
                                 String msg = scanner.nextLine();
                                 buffer.put(msg.getBytes());
                                 buffer.flip();
@@ -55,6 +53,7 @@ public class Client {
                             }
                         });
                     }
+
                     ch.register(selector, SelectionKey.OP_READ);
                 }
 

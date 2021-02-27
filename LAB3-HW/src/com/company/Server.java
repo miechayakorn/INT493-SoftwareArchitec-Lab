@@ -24,7 +24,7 @@ public class Server {
         serverCh.bind(new InetSocketAddress(9000));
         serverCh.register(selector, SelectionKey.OP_ACCEPT);
 
-        System.out.println(" Server started :  connection");
+        System.out.println(" Server started : receive connect from client !!");
         while (true) {
             selector.select();
             Set<SelectionKey> keys = selector.selectedKeys();
@@ -32,7 +32,7 @@ public class Server {
             while (it.hasNext()) {
                 SelectionKey key = it.next();
                 if (key.isAcceptable()) {
-                    System.out.println("Got new client");
+                    // New message from client
                     ServerSocketChannel ch = (ServerSocketChannel) key.channel();
                     SocketChannel clientCh = ch.accept();
                     clientCh.configureBlocking(false);
@@ -56,7 +56,7 @@ public class Server {
                     for (SocketChannel client : clients) {
                         SocketChannel value = client;
                         ByteBuffer writeBuffer = ByteBuffer.allocate(1024);
-                        writeBuffer.put(("Message: " + message).getBytes());
+                        writeBuffer.put(("Your Typing Message: " + message).getBytes());
                         writeBuffer.flip();
                         value.write(writeBuffer);
                     }
